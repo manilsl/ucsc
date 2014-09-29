@@ -13,6 +13,7 @@ public class Student {
     String lastName;
     String nicNo;
 
+    @XmlElement(name="studentID")
     public String getStudentID() {
         return studentID;
     }
@@ -21,6 +22,7 @@ public class Student {
         this.studentID = studentID;
     }
 
+    @XmlElement(name="firstName")
     public String getFirstName() {
         return firstName;
     }
@@ -29,6 +31,7 @@ public class Student {
         this.firstName = firstName;
     }
 
+    @XmlElement(name="lastName")
     public String getLastName() {
         return lastName;
     }
@@ -37,6 +40,7 @@ public class Student {
         this.lastName = lastName;
     }
 
+    @XmlElement(name="nicNo")
     public String getNicNo() {
         return nicNo;
     }
