@@ -3,12 +3,14 @@ package org.wso2.repository.device.model;
 /**
  * Created by manilsl on 7/10/14.
  */
+@XmlRootElement(name="Schedule")
 public class Schedule {
 
     String scheduleID;
     String year;
     String batch;
 
+    @XmlElement(name="scheduleID")
     public String getScheduleID() {
         return scheduleID;
     }
@@ -16,7 +18,8 @@ public class Schedule {
     public void setScheduleID(String scheduleID) {
         this.scheduleID = scheduleID;
     }
-
+    
+    @XmlElement(name="year")
     public String getYear() {
         return year;
     }
@@ -24,7 +27,8 @@ public class Schedule {
     public void setYear(String year) {
         this.year = year;
     }
-
+    
+    @XmlElement(name="batch")
     public String getBatch() {
         return batch;
     }
