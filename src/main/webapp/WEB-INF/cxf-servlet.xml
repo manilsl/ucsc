@@ -27,12 +27,16 @@
         <jaxrs:serviceBeans>
             <ref bean="deviceTypeServiceBean"/>
             <ref bean="courseServiceBean"/>
+            <ref bean="programServiceBean"/>
+            <ref bean="scheduleServiceBean"/>
       </jaxrs:serviceBeans>
 
     </jaxrs:server>
 
     <bean id="deviceTypeServiceBean" class="org.wso2.repository.device.service.DeviceTypeService"/>
     <bean id="courseServiceBean" class="org.wso2.repository.device.service.CourseService"/>
+    <bean id="programServiceBean" class="org.wso2.repository.device.service.ProgramService"/>
+    <bean id="scheduleServiceBean" class="org.wso2.repository.device.service.ScheduleService"/>
 
 </beans>
 

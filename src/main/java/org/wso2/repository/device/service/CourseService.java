@@ -48,7 +48,7 @@ public class CourseService
     @Consumes(MediaType.APPLICATION_JSON)
     public String addCourse(Course course) throws SQLException {
 
-        String strResponse="";
+        String strResponse="temp";
         courseDao=new CourseDaoImpl();
         strResponse=courseDao.addCourse(course);
         return strResponse;
@@ -61,7 +61,7 @@ public class CourseService
     @Consumes(MediaType.APPLICATION_JSON)
     public String updateCourse(Course course ,@PathParam("id") String id ) throws SQLException {
 
-        String strResponse="";
+        String strResponse="temp";
         courseDao=new CourseDaoImpl();
         strResponse=courseDao.editCourse(course,id);
         return strResponse;

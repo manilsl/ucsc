@@ -1,8 +1,12 @@
 package org.wso2.repository.device.model;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by manilsl on 7/10/14.
  */
+@XmlRootElement(name="StudentProgram")
 public class StudentProgram {
 
     String studentID;
@@ -10,6 +14,7 @@ public class StudentProgram {
     String subjectID;
     long finalMark;
 
+    @XmlElement(name="studentID")
     public String getStudentID() {
         return studentID;
     }
@@ -18,6 +23,7 @@ public class StudentProgram {
         this.studentID = studentID;
     }
 
+    @XmlElement(name="programID")
     public String getProgramID() {
         return programID;
     }
@@ -26,6 +32,7 @@ public class StudentProgram {
         this.programID = programID;
     }
 
+    @XmlElement(name="subjectID")
     public String getSubjectID() {
         return subjectID;
     }
@@ -34,6 +41,7 @@ public class StudentProgram {
         this.subjectID = subjectID;
     }
 
+    @XmlElement(name="finalMark")
     public long getFinalMark() {
         return finalMark;
     }

@@ -1,13 +1,18 @@
 package org.wso2.repository.device.model;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by manilsl on 7/10/14.
  */
+@XmlRootElement(name="Subject")
 public class Subject {
 
     String subjectID;
     String subjectName;
 
+    @XmlElement(name="subjectID")
     public String getSubjectID() {
         return subjectID;
     }
@@ -16,6 +21,7 @@ public class Subject {
         this.subjectID = subjectID;
     }
 
+    @XmlElement(name="subjectName")
     public String getSubjectName() {
         return subjectName;
     }

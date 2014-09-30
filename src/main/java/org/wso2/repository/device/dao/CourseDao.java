@@ -10,6 +10,6 @@ public interface CourseDao {
     public String deleteCourse(String id) throws Exception;
     public LinkedList<Course> getCourse(UriInfo parameters);
     public String addCourse(Course course);
-    public String editCourse(Course device, String id);
+    public String editCourse(Course course, String id);
 
 }

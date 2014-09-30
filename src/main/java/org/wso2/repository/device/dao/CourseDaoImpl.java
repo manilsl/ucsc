@@ -27,7 +27,7 @@ public class CourseDaoImpl implements CourseDao{
 
         try{
 
-            String strCount = "select count(*) cnt from UCSC.TB_COURSE where CO_ID  =" + id +")";
+            String strCount = "select count(*) cnt from UCSC.TB_COURSE where CO_ID  ='" + id +"'";
             ResultSet resultSet = stmt.executeQuery(strCount);
             resultSet.next();
 
@@ -35,7 +35,7 @@ public class CourseDaoImpl implements CourseDao{
             if(resultSet.getInt("cnt") == 0)
             {strResponse="No Records To Be Deleted";}
             {
-                String query = "delete from UCSC.TB_COURSE where CO_ID =" +id;
+                String query = "delete from UCSC.TB_COURSE where CO_ID ='" + id+"'";
                 stmt.execute(query);
                 strResponse="Successfully Deleted";
 
@@ -149,7 +149,7 @@ public class CourseDaoImpl implements CourseDao{
 
             if( course.getCourseName()!=null)
             {
-                query = "update UCSC.TB_COURSE set CO_NAME ='"+course.getCourseName() +"' WHERE CO_ID =" + id;
+                query = "update UCSC.TB_COURSE set CO_NAME ='"+course.getCourseName() +"' WHERE CO_ID ='" + id+"'";
                 statement.execute(query);
             }
 
