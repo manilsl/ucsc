@@ -153,8 +153,8 @@ public class StudentDaoImpl implements StudentDao{
 
             Connection con = DB.getConnection();
             Statement stmt = con.createStatement();
-            String query = "insert into UCSC.TB_STUDENT(ST_ID,CO_ID,SCH_ID) values ('" + student.getStudentID() + "','"
-                    + student.getCourseID()  + "','" + student.getScheduleID() + "')";
+            String query = "insert into UCSC.TB_STUDENT(ST_ID,ST_FIRST_NAME,ST_LAST_NAME,ST_NIC) values ('" + student.getStudentID() + "','"
+                    + student.getFirstName()  + "','" + student.getLastName()  + "','" + student.getNicNo() + "')";
 
             stmt.executeUpdate(query);
             strResponse="Student Added Successfully";
