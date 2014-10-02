@@ -12,7 +12,7 @@ public class StudentProgram {
     String studentID;
     String programID;
     String subjectID;
-    long finalMark;
+    double finalMark;
 
     @XmlElement(name="studentID")
     public String getStudentID() {
@@ -42,11 +42,11 @@ public class StudentProgram {
     }
 
     @XmlElement(name="finalMark")
-    public long getFinalMark() {
+    public double getFinalMark() {
         return finalMark;
     }
 
-    public void setFinalMark(long finalMark) {
+    public void setFinalMark(double finalMark) {
         this.finalMark = finalMark;
     }
 }

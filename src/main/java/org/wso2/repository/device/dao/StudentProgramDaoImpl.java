@@ -1,9 +1,10 @@
 package org.wso2.repository.device.dao;
 
-import org.wso2.repository.device.model.Student;
+import org.wso2.repository.device.model.StudentProgram;
 import org.wso2.repository.device.util.DB;
 
 import javax.ws.rs.core.UriInfo;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,15 +12,15 @@ import java.sql.Statement;
 import java.util.LinkedList;
 
 
-public class StudentDaoImpl implements StudentDao{
+public class StudentProgramDaoImpl implements StudentProgramDao{
 
-   Student student;
+   StudentProgram studentProgram;
    Connection connection;
 
 
 
 
-    public String deleteStudent(String id) throws Exception {
+    public String deleteStudentProgram(UriInfo id  ) throws Exception {
         String strResponse="";
         Connection con = DB.getConnection();
         Statement stmt = con.createStatement();
@@ -27,7 +28,8 @@ public class StudentDaoImpl implements StudentDao{
 
         try{
 
-            String strCount = "select count(*) cnt from UCSC.TB_STUDENT where ST_ID  ='" + id +"'";
+            String strCount = "select count(*) cnt from UCSC.TB_STUDENT_PROGRAM where ST_ID  ='" 
+            + id.getQueryParameters().getFirst("studentID") +"' AND PG_ID = '" + id.getQueryParameters().getFirst("programID") +"'";
             ResultSet resultSet = stmt.executeQuery(strCount);
             resultSet.next();
 
@@ -35,7 +37,8 @@ public class StudentDaoImpl implements StudentDao{
             if(resultSet.getInt("cnt") == 0)
             {strResponse="No Records To Be Deleted";}
             {
-                String query = "delete from UCSC.TB_STUDENT where ST_ID ='" +id+"'";
+                String query = "delete from UCSC.TB_STUDENT_PROGRAM where ST_ID  ='" 
+            + id.getQueryParameters().getFirst("studentID") +"' AND PG_ID = '" + id.getQueryParameters().getFirst("programID") +"'";
                 stmt.execute(query);
                 strResponse="Successfully Deleted";
 
@@ -53,63 +56,63 @@ public class StudentDaoImpl implements StudentDao{
         }
     }
 
-    public LinkedList<Student> getStudent(UriInfo parameters) {
+    public LinkedList<StudentProgram> getStudentProgram(UriInfo parameters) {
 
-        LinkedList studentList=new LinkedList();
+        LinkedList studentProgramList=new LinkedList();
 
         try {
-            String studentId = parameters.getQueryParameters().getFirst("studentID");
-            String firstName = parameters.getQueryParameters().getFirst("firstName");
-            String lastName = parameters.getQueryParameters().getFirst("lastName");
-			String nicNo = parameters.getQueryParameters().getFirst("nicNo");
+            String studentID = parameters.getQueryParameters().getFirst("studentID");
+            String programID = parameters.getQueryParameters().getFirst("programID");
+            String subjectID = parameters.getQueryParameters().getFirst("subjectID");
+            String finalMark = parameters.getQueryParameters().getFirst("finalMark");
+            
 
-			
             String options = null;
 
             Connection con=DB.getConnection();
             Statement statement=con.createStatement();
-            String query ="select * from UCSC.TB_STUDENT ";
+            String query ="select * from UCSC.TB_STUDENT_PROGRAM ";
 
             boolean firstPara = false;
 
-            if (studentId !=null)
+            if (studentID !=null)
             {
-                options = " ST_ID = '" + studentId +"' ";
+                options = " ST_ID = '" + studentID +"' ";
                 firstPara =true;
             }
-
-            if (firstName !=null)
+            
+            if (programID !=null)
             {
                 if (firstPara==false) {
-                    options = " ST_FIRST_NAME = '" + firstName+ "' ";
+                    options = " PG_ID = '" + programID+ "' ";
                     firstPara = true;
                 }else
                 {
-                    options = options +  " AND ST_FIRST_NAME = '" + firstName + "' ";
+                    options = options +  " AND PG_ID = '" + programID + "' ";
+                }
+
+            }
+            
+            if (subjectID !=null)
+            {
+                if (firstPara==false) {
+                    options = " SUB_ID = '" + subjectID+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND SUB_ID = '" + subjectID + "' ";
                 }
 
             }
 
-            if (lastName !=null)
+            if (finalMark !=null)
             {
                 if (firstPara==false) {
-                    options = " ST_LAST_NAME = '" + lastName+ "' ";
+                    options = " FINAL_MARK = '" + finalMark+ "' ";
                     firstPara = true;
                 }else
                 {
-                    options = options +  " AND ST_LAST_NAME = '" + lastName + "' ";
-                }
-
-            }
-			
-			if (nicNo !=null)
-            {
-                if (firstPara==false) {
-                    options = " ST_NIC = '" + nicNo+ "' ";
-                    firstPara = true;
-                }else
-                {
-                    options = options +  " AND ST_NIC = '" + nicNo + "' ";
+                    options = options +  " AND FINAL_MARK = '" + finalMark + "' ";
                 }
 
             }
@@ -123,54 +126,57 @@ public class StudentDaoImpl implements StudentDao{
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
 
-                Student student =new Student();
-                student.setStudentID(resultSet.getString("ST_ID"));
-                student.setFirstName(resultSet.getString("ST_FIRST_NAME"));
-                student.setLastName(resultSet.getString("ST_LAST_NAME"));
-				student.setNicNo(resultSet.getString("ST_NIC"));
-                studentList.add(student);
+                StudentProgram studentProgram =new StudentProgram();
+                studentProgram.setStudentID(resultSet.getString("ST_ID"));
+                studentProgram.setProgramID(resultSet.getString("PG_ID"));
+                studentProgram.setSubjectID(resultSet.getString("SUB_ID"));
+                studentProgram.setFinalMark(resultSet.getInt("FINAL_MARK"));
+                studentProgramList.add(studentProgram);
             }
 
 
-            return studentList;
+            return studentProgramList;
 
         }catch (Exception e) {
             e.printStackTrace();
 
-            return studentList;
+            return studentProgramList;
 
         }finally{
-            return studentList;
+            return studentProgramList;
         }
     }
 
 
 
-    public String addStudent(Student student) {
+    public String addStudentProgram(StudentProgram studentProgram) {
 
         String strResponse = null;
         try {
 
             Connection con = DB.getConnection();
             Statement stmt = con.createStatement();
-            String query = "insert into UCSC.TB_STUDENT(ST_ID,ST_FIRST_NAME,ST_LAST_NAME,ST_NIC) values ('" + student.getStudentID() + "','"
-                    + student.getFirstName()  + "','" + student.getLastName()  + "','" + student.getNicNo() + "')";
+            String query = "insert into UCSC.TB_STUDENT_PROGRAM(ST_ID,PG_ID,SUB_ID,FINAL_MARK) values ('" 
+            + studentProgram.getStudentID() + "','" + studentProgram.getProgramID() 
+            + "','" + studentProgram.getSubjectID()   + "','" + studentProgram.getFinalMark() + "')";
 
             stmt.executeUpdate(query);
-            strResponse="Student Added Successfully";
+            strResponse="Student Program Added Successfully";
 
         } catch (Exception ee) {
             ee.printStackTrace();
-            strResponse="Error in adding the Student";
+            strResponse="Error in adding the Student Program";
         }finally{
             return strResponse;
         }
     }
 
-    public String editStudent(Student student, String id) {
+    public String editStudentProgram(StudentProgram studentProgram, UriInfo id) {
         String strResponse = null;
         try {
 
+        
+        	
             Connection connection = DB.getConnection();
             Statement statement = connection.createStatement();
 
@@ -178,25 +184,22 @@ public class StudentDaoImpl implements StudentDao{
             LinkedList<String> listColumns= new LinkedList<String>();
             LinkedList<String> listValues= new LinkedList<String>();
            
-            if( student.getFirstName()!=null) {
-                listColumns.add("ST_FIRST_NAME");
-                listValues.add(student.getFirstName());
+
+            
+            if(  Double.valueOf(studentProgram.getFinalMark()) !=null) {
+                listColumns.add("FINAL_MARK");
+                listValues.add(Double.valueOf(studentProgram.getFinalMark()).toString());
             }
-            if( student.getLastName()!=null) {
-                listColumns.add("ST_LAST_NAME");
-                listValues.add(student.getLastName());
-            }
-            if( student.getNicNo()!=null) {
-                listColumns.add("ST_NIC");
-                listValues.add(student.getNicNo());
-            }
+            
+            
+
 
 
             for (int x= 0;x<listColumns.size();x++) {
 
                 if(x==0)
                 {
-                    query = "update UCSC.TB_STUDENT set ";
+                    query = "update UCSC.TB_STUDENT_PROGRAM set ";
                 }
 
                 if(x!=(listColumns.size()-1))
@@ -206,7 +209,9 @@ public class StudentDaoImpl implements StudentDao{
                 }
                 else{
                     query = query + listColumns.get(x) + " = '";
-                    query = query + listValues.get(x)+ "' WHERE ST_ID = '" + id+"'";
+                    query = query + listValues.get(x)+ "' where ST_ID  ='" 
+                    					+ id.getQueryParameters().getFirst("studentID") 
+                    					+"' AND PG_ID = '" + id.getQueryParameters().getFirst("programID") +"'";
                 }
 
             }

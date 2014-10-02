@@ -1,6 +1,6 @@
 package org.wso2.repository.device.dao;
 
-import org.wso2.repository.device.model.Student;
+import org.wso2.repository.device.model.Subject;
 import org.wso2.repository.device.util.DB;
 
 import javax.ws.rs.core.UriInfo;
@@ -11,15 +11,15 @@ import java.sql.Statement;
 import java.util.LinkedList;
 
 
-public class StudentDaoImpl implements StudentDao{
+public class SubjectDaoImpl implements SubjectDao{
 
-   Student student;
+   Subject subject;
    Connection connection;
 
 
 
 
-    public String deleteStudent(String id) throws Exception {
+    public String deleteSubject(String id) throws Exception {
         String strResponse="";
         Connection con = DB.getConnection();
         Statement stmt = con.createStatement();
@@ -27,7 +27,7 @@ public class StudentDaoImpl implements StudentDao{
 
         try{
 
-            String strCount = "select count(*) cnt from UCSC.TB_STUDENT where ST_ID  ='" + id +"'";
+            String strCount = "select count(*) cnt from UCSC.TB_SUBJECT where SUB_ID  ='" + id +"'";
             ResultSet resultSet = stmt.executeQuery(strCount);
             resultSet.next();
 
@@ -35,7 +35,7 @@ public class StudentDaoImpl implements StudentDao{
             if(resultSet.getInt("cnt") == 0)
             {strResponse="No Records To Be Deleted";}
             {
-                String query = "delete from UCSC.TB_STUDENT where ST_ID ='" +id+"'";
+                String query = "delete from UCSC.TB_SUBJECT where SUB_ID ='" +id+"'";
                 stmt.execute(query);
                 strResponse="Successfully Deleted";
 
@@ -53,66 +53,42 @@ public class StudentDaoImpl implements StudentDao{
         }
     }
 
-    public LinkedList<Student> getStudent(UriInfo parameters) {
+    public LinkedList<Subject> getSubject(UriInfo parameters) {
 
-        LinkedList studentList=new LinkedList();
+        LinkedList subjectList=new LinkedList();
 
         try {
-            String studentId = parameters.getQueryParameters().getFirst("studentID");
-            String firstName = parameters.getQueryParameters().getFirst("firstName");
-            String lastName = parameters.getQueryParameters().getFirst("lastName");
-			String nicNo = parameters.getQueryParameters().getFirst("nicNo");
+            String subjectId = parameters.getQueryParameters().getFirst("subjectID");
+            String subjectName = parameters.getQueryParameters().getFirst("subjectName");
 
-			
+
             String options = null;
 
             Connection con=DB.getConnection();
             Statement statement=con.createStatement();
-            String query ="select * from UCSC.TB_STUDENT ";
+            String query ="select * from UCSC.TB_SUBJECT ";
 
             boolean firstPara = false;
 
-            if (studentId !=null)
+            if (subjectId !=null)
             {
-                options = " ST_ID = '" + studentId +"' ";
+                options = " SUB_ID = '" + subjectId +"' ";
                 firstPara =true;
             }
 
-            if (firstName !=null)
+            if (subjectName !=null)
             {
                 if (firstPara==false) {
-                    options = " ST_FIRST_NAME = '" + firstName+ "' ";
+                    options = " SUB_NAME = '" + subjectName+ "' ";
                     firstPara = true;
                 }else
                 {
-                    options = options +  " AND ST_FIRST_NAME = '" + firstName + "' ";
+                    options = options +  " AND SUB_NAME = '" + subjectName + "' ";
                 }
 
             }
 
-            if (lastName !=null)
-            {
-                if (firstPara==false) {
-                    options = " ST_LAST_NAME = '" + lastName+ "' ";
-                    firstPara = true;
-                }else
-                {
-                    options = options +  " AND ST_LAST_NAME = '" + lastName + "' ";
-                }
 
-            }
-			
-			if (nicNo !=null)
-            {
-                if (firstPara==false) {
-                    options = " ST_NIC = '" + nicNo+ "' ";
-                    firstPara = true;
-                }else
-                {
-                    options = options +  " AND ST_NIC = '" + nicNo + "' ";
-                }
-
-            }
 
 
             if(firstPara)
@@ -123,51 +99,50 @@ public class StudentDaoImpl implements StudentDao{
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
 
-                Student student =new Student();
-                student.setStudentID(resultSet.getString("ST_ID"));
-                student.setFirstName(resultSet.getString("ST_FIRST_NAME"));
-                student.setLastName(resultSet.getString("ST_LAST_NAME"));
-				student.setNicNo(resultSet.getString("ST_NIC"));
-                studentList.add(student);
+                Subject subject =new Subject();
+                subject.setSubjectID(resultSet.getString("SUB_ID"));
+                subject.setSubjectName(resultSet.getString("SUB_NAME"));
+
+                subjectList.add(subject);
             }
 
 
-            return studentList;
+            return subjectList;
 
         }catch (Exception e) {
             e.printStackTrace();
 
-            return studentList;
+            return subjectList;
 
         }finally{
-            return studentList;
+            return subjectList;
         }
     }
 
 
 
-    public String addStudent(Student student) {
+    public String addSubject(Subject subject) {
 
         String strResponse = null;
         try {
 
             Connection con = DB.getConnection();
             Statement stmt = con.createStatement();
-            String query = "insert into UCSC.TB_STUDENT(ST_ID,ST_FIRST_NAME,ST_LAST_NAME,ST_NIC) values ('" + student.getStudentID() + "','"
-                    + student.getFirstName()  + "','" + student.getLastName()  + "','" + student.getNicNo() + "')";
+            String query = "insert into UCSC.TB_SUBJECT(SUB_ID,SUB_NAME) values ('" + subject.getSubjectID() + "','"
+                    + subject.getSubjectName() + "')";
 
             stmt.executeUpdate(query);
-            strResponse="Student Added Successfully";
+            strResponse="Subject Added Successfully";
 
         } catch (Exception ee) {
             ee.printStackTrace();
-            strResponse="Error in adding the Student";
+            strResponse="Error in adding the Subject";
         }finally{
             return strResponse;
         }
     }
 
-    public String editStudent(Student student, String id) {
+    public String editSubject(Subject subject, String id) {
         String strResponse = null;
         try {
 
@@ -178,17 +153,9 @@ public class StudentDaoImpl implements StudentDao{
             LinkedList<String> listColumns= new LinkedList<String>();
             LinkedList<String> listValues= new LinkedList<String>();
            
-            if( student.getFirstName()!=null) {
-                listColumns.add("ST_FIRST_NAME");
-                listValues.add(student.getFirstName());
-            }
-            if( student.getLastName()!=null) {
-                listColumns.add("ST_LAST_NAME");
-                listValues.add(student.getLastName());
-            }
-            if( student.getNicNo()!=null) {
-                listColumns.add("ST_NIC");
-                listValues.add(student.getNicNo());
+            if( subject.getSubjectName()!=null) {
+                listColumns.add("SUB_NAME");
+                listValues.add(subject.getSubjectName());
             }
 
 
@@ -196,7 +163,7 @@ public class StudentDaoImpl implements StudentDao{
 
                 if(x==0)
                 {
-                    query = "update UCSC.TB_STUDENT set ";
+                    query = "update UCSC.TB_SUBJECT set ";
                 }
 
                 if(x!=(listColumns.size()-1))
@@ -206,7 +173,7 @@ public class StudentDaoImpl implements StudentDao{
                 }
                 else{
                     query = query + listColumns.get(x) + " = '";
-                    query = query + listValues.get(x)+ "' WHERE ST_ID = '" + id+"'";
+                    query = query + listValues.get(x)+ "' WHERE SUB_ID = '" + id+"'";
                 }
 
             }
