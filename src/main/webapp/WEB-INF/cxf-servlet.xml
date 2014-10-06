@@ -29,6 +29,9 @@
             <ref bean="courseServiceBean"/>
             <ref bean="programServiceBean"/>
             <ref bean="scheduleServiceBean"/>
+            <ref bean="studentServiceBean"/>
+            <ref bean="studentProgramServiceBean"/>
+            <ref bean="subjectServiceBean"/>
       </jaxrs:serviceBeans>
 
     </jaxrs:server>
@@ -37,6 +40,9 @@
     <bean id="courseServiceBean" class="org.wso2.repository.device.service.CourseService"/>
     <bean id="programServiceBean" class="org.wso2.repository.device.service.ProgramService"/>
     <bean id="scheduleServiceBean" class="org.wso2.repository.device.service.ScheduleService"/>
+    <bean id="studentServiceBean" class="org.wso2.repository.device.service.StudentService"/>
+    <bean id="studentProgramServiceBean" class="org.wso2.repository.device.service.StudentProgramService"/>
+    <bean id="subjectServiceBean" class="org.wso2.repository.device.service.SubjectService"/>
 
 </beans>
 

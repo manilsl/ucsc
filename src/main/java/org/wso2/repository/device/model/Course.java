@@ -9,8 +9,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="Course")
 public class Course {
 
-    String courseID;
+    String courseDisplayID;
     String courseName;
+    String courseID;
+
+    @XmlElement(name="courseDisplayID")
+    public String getCourseDisplayID() {
+        return courseDisplayID;
+    }
+
+    public void setCourseDisplayID(String courseDisplayID) {
+        this.courseDisplayID = courseDisplayID;
+    }
+
+
 
     @XmlElement(name="courseID")
     public String getCourseID() {

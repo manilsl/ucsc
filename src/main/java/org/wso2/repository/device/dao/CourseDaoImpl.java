@@ -27,7 +27,7 @@ public class CourseDaoImpl implements CourseDao{
 
         try{
 
-            String strCount = "select count(*) cnt from UCSC.TB_COURSE where CO_ID  ='" + id +"'";
+            String strCount = "select count(*) cnt from UCSC.TB_COURSE where CO_DISPLAY_ID  ='" + id +"'";
             ResultSet resultSet = stmt.executeQuery(strCount);
             resultSet.next();
 
@@ -35,7 +35,7 @@ public class CourseDaoImpl implements CourseDao{
             if(resultSet.getInt("cnt") == 0)
             {strResponse="No Records To Be Deleted";}
             {
-                String query = "delete from UCSC.TB_COURSE where CO_ID ='" + id+"'";
+                String query = "delete from UCSC.TB_COURSE where CO_DISPLAY_ID ='" + id+"'";
                 stmt.execute(query);
                 strResponse="Successfully Deleted";
 
@@ -58,7 +58,8 @@ public class CourseDaoImpl implements CourseDao{
         LinkedList courseList=new LinkedList();
 
         try {
-            String courseId = parameters.getQueryParameters().getFirst("courseID");
+            String courseDisplayID = parameters.getQueryParameters().getFirst("courseDisplayID");
+            String courseId = parameters.getQueryParameters().getFirst("courseDisplayID");
             String courseName = parameters.getQueryParameters().getFirst("courseName");
 
             String options = null;
@@ -87,6 +88,19 @@ public class CourseDaoImpl implements CourseDao{
 
             }
 
+            if (courseName !=null)
+            {
+                if (firstPara==false) {
+                    options = " CO_DISPLAY_ID = '" + courseDisplayID+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND CO_DISPLAY_ID = '" + courseDisplayID + "' ";
+                }
+
+            }
+
+
 
             if(firstPara)
             {
@@ -98,6 +112,7 @@ public class CourseDaoImpl implements CourseDao{
 
                 Course course =new Course();
                 course.setCourseID(resultSet.getString("CO_ID"));
+                course.setCourseDisplayID(resultSet.getString("CO_DISPLAY_ID"));
                 course.setCourseName(resultSet.getString("CO_NAME"));
                 courseList.add(course);
             }
@@ -124,7 +139,7 @@ public class CourseDaoImpl implements CourseDao{
 
             Connection con = DB.getConnection();
             Statement stmt = con.createStatement();
-            String query = "insert into UCSC.TB_COURSE(CO_ID,CO_NAME) values ('" + course.getCourseID() + "','"
+            String query = "insert into UCSC.TB_COURSE(CO_DISPLAY_ID,CO_NAME) values ('" + course.getCourseDisplayID() + "','"
                     + course.getCourseName() +"')";
 
             stmt.executeUpdate(query);
