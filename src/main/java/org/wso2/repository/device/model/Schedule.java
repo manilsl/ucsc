@@ -14,9 +14,7 @@ public class Schedule {
     String batch;
 
     @XmlElement(name="scheduleID")
-    public String getScheduleID() {
-        return scheduleID;
-    }
+    public String getScheduleID() {return scheduleID; }
 
     public void setScheduleID(String scheduleID) {
         this.scheduleID = scheduleID;

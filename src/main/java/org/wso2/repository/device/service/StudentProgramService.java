@@ -3,6 +3,7 @@ package org.wso2.repository.device.service;
 import org.wso2.repository.device.dao.StudentProgramDao;
 import org.wso2.repository.device.dao.StudentProgramDaoImpl;
 import org.wso2.repository.device.model.StudentProgram;
+import org.wso2.repository.device.model.StudentProgramDetail;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -12,31 +13,43 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 
-@Path("/studentProgram/")
+@Path("/studentprogram/")
 public class StudentProgramService
 {
 
-    StudentProgramDao studentProgramDao;
+    StudentProgramDao studentprogramDao;
 
 
     @DELETE
-    @Path("/deletestudentProgram/")
+    @Path("/deletestudentprogram/")
     public String deleteStudentProgram(@Context UriInfo  id) throws Exception {
 
       String strResponse;
-      studentProgramDao=new StudentProgramDaoImpl();
-      strResponse=studentProgramDao.deleteStudentProgram(id);
+      studentprogramDao=new StudentProgramDaoImpl();
+      strResponse=studentprogramDao.deleteStudentProgram(id);
       return strResponse;
 
     }
 
     @GET
-    @Path("/getstudentProgram/")
+    @Path("/getstudentprogram/")
     @Produces(MediaType.APPLICATION_JSON)
     public LinkedList<StudentProgram> getStudentPrograms(@Context UriInfo parameters) throws SQLException {
+        LinkedList studentprogramList=new LinkedList();
+        studentprogramDao=new StudentProgramDaoImpl();
+        studentprogramList=studentprogramDao.getStudentProgram(parameters);
+        return studentprogramList;
+
+    }
+
+
+    @GET
+    @Path("/getstudentprogramdetail/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public LinkedList<StudentProgramDetail> getStudentProgramsDetail(@Context UriInfo parameters) throws SQLException {
         LinkedList studentProgramList=new LinkedList();
-        studentProgramDao=new StudentProgramDaoImpl();
-        studentProgramList=studentProgramDao.getStudentProgram(parameters);
+        studentprogramDao=new StudentProgramDaoImpl();
+        studentProgramList=studentprogramDao.getStudentProgramDetail(parameters);
         return studentProgramList;
 
     }
@@ -44,26 +57,26 @@ public class StudentProgramService
 
 
     @POST
-    @Path("/addstudentProgram/")
+    @Path("/addstudentprogram/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String addStudentProgram(StudentProgram studentProgram) throws SQLException {
+    public String addStudentProgram(StudentProgram studentprogram) throws SQLException {
 
         String strResponse="";
-        studentProgramDao=new StudentProgramDaoImpl();
-        strResponse=studentProgramDao.addStudentProgram(studentProgram);
+        studentprogramDao=new StudentProgramDaoImpl();
+        strResponse=studentprogramDao.addStudentProgram(studentprogram);
         return strResponse;
 
     }
 
 
     @PUT
-    @Path("/updatestudentProgram/")
+    @Path("/updatestudentprogram/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String updateStudentProgram(StudentProgram studentProgram ,@Context UriInfo id ) throws SQLException {
+    public String updateStudentProgram(StudentProgram studentprogram ,@Context UriInfo id ) throws SQLException {
 
         String strResponse="";
-        studentProgramDao=new StudentProgramDaoImpl();
-        strResponse=studentProgramDao.editStudentProgram(studentProgram,id);
+        studentprogramDao=new StudentProgramDaoImpl();
+        strResponse=studentprogramDao.editStudentProgram(studentprogram,id);
         return strResponse;
 
 

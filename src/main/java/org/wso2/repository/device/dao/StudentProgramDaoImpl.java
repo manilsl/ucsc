@@ -1,6 +1,7 @@
 package org.wso2.repository.device.dao;
 
 import org.wso2.repository.device.model.StudentProgram;
+import org.wso2.repository.device.model.StudentProgramDetail;
 import org.wso2.repository.device.util.DB;
 
 import javax.ws.rs.core.UriInfo;
@@ -108,11 +109,11 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
             if (finalMark !=null)
             {
                 if (firstPara==false) {
-                    options = " FINAL_MARK = '" + finalMark+ "' ";
+                    options = " SP_FINAL_MARKS = '" + finalMark+ "' ";
                     firstPara = true;
                 }else
                 {
-                    options = options +  " AND FINAL_MARK = '" + finalMark + "' ";
+                    options = options +  " AND SP_FINAL_MARKS = '" + finalMark + "' ";
                 }
 
             }
@@ -130,7 +131,139 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
                 studentProgram.setStudentID(resultSet.getString("ST_ID"));
                 studentProgram.setProgramID(resultSet.getString("PG_ID"));
                 studentProgram.setSubjectID(resultSet.getString("SUB_ID"));
-                studentProgram.setFinalMark(resultSet.getInt("FINAL_MARK"));
+                studentProgram.setFinalMark(resultSet.getInt("SP_FINAL_MARKS"));
+                studentProgramList.add(studentProgram);
+            }
+
+
+            return studentProgramList;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+
+            return studentProgramList;
+
+        }finally{
+            return studentProgramList;
+        }
+    }
+
+    public LinkedList<StudentProgramDetail> getStudentProgramDetail(UriInfo parameters) {
+        LinkedList studentProgramList=new LinkedList();
+
+        try {
+            String studentID = parameters.getQueryParameters().getFirst("studentID");
+            String programID = parameters.getQueryParameters().getFirst("programID");
+            String subjectID = parameters.getQueryParameters().getFirst("subjectID");
+            String finalMark = parameters.getQueryParameters().getFirst("finalMark");
+            String studentName= parameters.getQueryParameters().getFirst("studentName");
+            String programName = parameters.getQueryParameters().getFirst("programName");
+            String subjectName = parameters.getQueryParameters().getFirst("subjectName");
+
+
+            String options = null;
+
+            Connection con=DB.getConnection();
+            Statement statement=con.createStatement();
+            String query ="select * from UCSC.VW_STUDENT_PROGRAM_DETAIL ";
+
+            boolean firstPara = false;
+
+            if (studentID !=null)
+            {
+                options = " ST_ID = '" + studentID +"' ";
+                firstPara =true;
+            }
+
+            if (programID !=null)
+            {
+                if (firstPara==false) {
+                    options = " PG_ID = '" + programID+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND PG_ID = '" + programID + "' ";
+                }
+
+            }
+
+            if (subjectID !=null)
+            {
+                if (firstPara==false) {
+                    options = " SUB_ID = '" + subjectID+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND SUB_ID = '" + subjectID + "' ";
+                }
+
+            }
+
+            if (studentName !=null)
+            {
+                if (firstPara==false) {
+                    options = " ST_NAME = '" + studentName+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND ST_NAME = '%" + studentName + "%' ";
+                }
+
+            }
+
+            if (programName !=null)
+            {
+                if (firstPara==false) {
+                    options = " PG_NAME = '" + programName+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND PG_NAME = '%" + programName + "%' ";
+                }
+
+            }
+
+            if (subjectName !=null)
+            {
+                if (firstPara==false) {
+                    options = " SUB_NAME = '" + subjectName+ "%' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND SUB_NAME = '" + subjectName + "' ";
+                }
+
+            }
+
+            if (finalMark !=null)
+            {
+                if (firstPara==false) {
+                    options = " SP_FINAL_MARKS = '" + finalMark+ "' ";
+                    firstPara = true;
+                }else
+                {
+                    options = options +  " AND SP_FINAL_MARKS = '" + finalMark + "' ";
+                }
+
+            }
+
+
+            if(firstPara)
+            {
+                query = query + " Where " + options;
+            }
+
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+
+                StudentProgramDetail studentProgram =new StudentProgramDetail();
+                studentProgram.setStudentID(resultSet.getString("ST_ID"));
+                studentProgram.setProgramID(resultSet.getString("PG_ID"));
+                studentProgram.setSubjectID(resultSet.getString("SUB_ID"));
+                studentProgram.setStudentName(resultSet.getString("ST_NAME"));
+                studentProgram.setProgramName(resultSet.getString("PG_NAME"));
+                studentProgram.setSubjectName(resultSet.getString("SUB_NAME"));
+                studentProgram.setFinalMark(resultSet.getInt("SP_FINAL_MARKS"));
                 studentProgramList.add(studentProgram);
             }
 
@@ -148,7 +281,6 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
     }
 
 
-
     public String addStudentProgram(StudentProgram studentProgram) {
 
         String strResponse = null;
@@ -156,7 +288,7 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
 
             Connection con = DB.getConnection();
             Statement stmt = con.createStatement();
-            String query = "insert into UCSC.TB_STUDENT_PROGRAM(ST_ID,PG_ID,SUB_ID,FINAL_MARK) values ('" 
+            String query = "insert into UCSC.TB_STUDENT_PROGRAM(ST_ID,PG_ID,SUB_ID,SP_FINAL_MARKS) values ('"
             + studentProgram.getStudentID() + "','" + studentProgram.getProgramID() 
             + "','" + studentProgram.getSubjectID()   + "','" + studentProgram.getFinalMark() + "')";
 
@@ -187,8 +319,12 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
 
             
             if(  Double.valueOf(studentProgram.getFinalMark()) !=null) {
-                listColumns.add("FINAL_MARK");
+                listColumns.add("SP_FINAL_MARKS");
                 listValues.add(Double.valueOf(studentProgram.getFinalMark()).toString());
+            }
+            else
+            {
+                System.out.println(" marks null");
             }
             
             
@@ -210,11 +346,13 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
                 else{
                     query = query + listColumns.get(x) + " = '";
                     query = query + listValues.get(x)+ "' where ST_ID  ='" 
-                    					+ id.getQueryParameters().getFirst("studentID") 
-                    					+"' AND PG_ID = '" + id.getQueryParameters().getFirst("programID") +"'";
+                    					+ id.getQueryParameters().getFirst("studentID")
+                    					+"' AND PG_ID = '" + id.getQueryParameters().getFirst("programID")
+                                        +"' AND SUB_ID = '" + id.getQueryParameters().getFirst("subjectID") +"'";
                 }
 
             }
+            System.out.println("update statement " + query);
 
             if (listColumns.size()!=0) {
                 statement.execute(query);
@@ -223,14 +361,12 @@ public class StudentProgramDaoImpl implements StudentProgramDao{
             strResponse="Record Successfully Updated";
             return strResponse;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             strResponse="Error In Updating The Record";
             return strResponse;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
+        } finally {
 
             return strResponse;
         }
